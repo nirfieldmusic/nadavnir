@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Nadav Nir</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#0f0f0f;color:#e0e0e0;min-height:100vh}
+    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh}
+    .login-box{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:14px;padding:2.5rem;width:340px;text-align:center}
+    .login-box h1{font-size:1.4rem;margin-bottom:.4rem;color:#fff}
+    .login-box p{color:#666;font-size:.85rem;margin-bottom:1.8rem}
+    input,select,textarea{width:100%;padding:.7rem 1rem;background:#111;border:1px solid #2a2a2a;border-radius:8px;color:#e0e0e0;font-family:'Inter',sans-serif;font-size:.88rem;outline:none;transition:border .2s}
+    input:focus,select:focus,textarea:focus{border-color:#4a8fa8}
+    textarea{resize:vertical;min-height:80px}
+    .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.4rem;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:500;transition:all .2s}
+    .btn-primary{background:#4a8fa8;color:#fff}.btn-primary:hover{background:#5aa0bb}
+    .btn-danger{background:#c0392b;color:#fff}.btn-danger:hover{background:#d44}
+    .btn-sm{padding:.4rem .8rem;font-size:.78rem}
+    .btn-outline{background:transparent;border:1px solid #2a2a2a;color:#aaa}.btn-outline:hover{border-color:#4a8fa8;color:#4a8fa8}
+
+    .app{display:none}
+    header{background:#141414;border-bottom:1px solid #2a2a2a;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    header h1{font-size:1rem;font-weight:600;color:#fff}
+    header span{font-size:.78rem;color:#666}
+
+    .layout{display:flex;min-height:calc(100vh - 60px)}
+    .sidebar{width:200px;background:#141414;border-right:1px solid #2a2a2a;padding:1.2rem 0;flex-shrink:0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+    .sidebar-item{display:block;padding:.6rem 1.4rem;font-size:.83rem;color:#888;cursor:pointer;transition:color .15s,background .15s;border:none;background:none;width:100%;text-align:left}
+    .sidebar-item:hover{color:#e0e0e0;background:#1e1e1e}
+    .sidebar-item.active{color:#4a8fa8;background:#1a2a35;font-weight:500}
+
+    .content{flex:1;padding:2rem;max-width:860px}
+    .panel{display:none}.panel.active{display:block}
+    .panel-title{font-size:1.2rem;font-weight:600;color:#fff;margin-bottom:.4rem}
+    .panel-desc{font-size:.83rem;color:#666;margin-bottom:1.8rem}
+
+    .field{margin-bottom:1.2rem}
+    .field label{display:block;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:#666;font-weight:500;margin-bottom:.45rem}
+
+    .card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:1.2rem;margin-bottom:.8rem}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+    .card-num{font-size:.72rem;color:#555;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+
+    .save-bar{position:fixed;bottom:2rem;right:2rem;z-index:100}
+    .save-btn{background:#4a8fa8;color:#fff;border:none;padding:.9rem 2rem;border-radius:10px;font-size:.9rem;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(74,143,168,.4);transition:all .2s}
+    .save-btn:hover{background:#5aa0bb;transform:translateY(-2px)}
+    .save-btn.saving{opacity:.7;pointer-events:none}
+
+    .toast{position:fixed;top:1.5rem;right:2rem;background:#1ed760;color:#000;padding:.7rem 1.4rem;border-radius:8px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200}
+    .toast.show{opacity:1}
+    .toast.error{background:#c0392b;color:#fff}
+
+    .add-row{display:flex;gap:.6rem;margin-top:.8rem}
+    .add-row input{flex:1}
+    .thumb-prev{width:60px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #2a2a2a}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <h1>Admin Panel</h1>
+    <p>Nadav Nir · Site Editor</p>
+    <div class="field">
+      <input type="password" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Sign In</button>
+    <div id="loginErr" style="color:#c0392b;font-size:.8rem;margin-top:.8rem"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <header>
+    <h1>✏️ Site Admin</h1>
+    <div style="display:flex;align-items:center;gap:1rem">
+      <a href="/nadav-nir-sound.html" target="_blank" style="color:#4a8fa8;font-size:.8rem;text-decoration:none">View Site →</a>
+      <button class="btn btn-outline btn-sm" onclick="logout()">Log out</button>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar">
+      <button class="sidebar-item active" onclick="showPanel('about')">About</button>
+      <button class="sidebar-item" onclick="showPanel('skills')">Core Skills</button>
+      <button class="sidebar-item" onclick="showPanel('work')">Work Videos</button>
+      <button class="sidebar-item" onclick="showPanel('music')">Music Videos</button>
+      <button class="sidebar-item" onclick="showPanel('fanlinks')">Fan Links</button>
+      <button class="sidebar-item" onclick="showPanel('streaming')">Streaming Links</button>
+      <button class="sidebar-item" onclick="showPanel('password')">Change Password</button>
+    </nav>
+
+    <div class="content">
+
+      <!-- ABOUT -->
+      <div class="panel active" id="panel-about">
+        <div class="panel-title">About</div>
+        <div class="panel-desc">Edit the bio text shown on the About page.</div>
+        <div class="field"><label>Page Lead (subtitle)</label><input type="text" id="bio-lead"/></div>
+        <div class="field"><label>Paragraph 1</label><textarea id="bio-p1"></textarea></div>
+        <div class="field"><label>Paragraph 2</label><textarea id="bio-p2"></textarea></div>
+        <div class="field"><label>Paragraph 3</label><textarea id="bio-p3"></textarea></div>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="panel" id="panel-skills">
+        <div class="panel-title">Core Skills</div>
+        <div class="panel-desc">Edit skill names and levels (0–100).</div>
+        <div id="skillsList"></div>
+      </div>
+
+      <!-- WORK VIDEOS -->
+      <div class="panel" id="panel-work">
+        <div class="panel-title">Work Videos</div>
+        <div class="panel-desc">Manage YouTube videos shown in the Work tab.</div>
+        <div id="workList"></div>
+        <div class="add-row">
+          <input type="text" id="newWorkId" placeholder="YouTube video ID (e.g. WJsDO-FJejk)"/>
+          <input type="text" id="newWorkTitle" placeholder="Title"/>
+          <button class="btn btn-primary btn-sm" onclick="addWorkVideo()">Add</button>
+        </div>
+      </div>
+
+      <!-- MUSIC VIDEOS -->
+      <div class="panel" id="panel-music">
+        <div class="panel-title">Music Videos</div>
+        <div class="panel-desc">Manage YouTube videos shown in the Music tab.</div>
+        <div id="musicList"></div>
+        <div class="add-row">
+          <input type="text" id="newMusicUrl" placeholder="YouTube URL"/>
+          <input type="text" id="newMusicTitle" placeholder="Title"/>
+          <button class="btn btn-primary btn-sm" onclick="addMusicVideo()">Add</button>
+        </div>
+      </div>
+
+      <!-- FAN LINKS -->
+      <div class="panel" id="panel-fanlinks">
+        <div class="panel-title">Fan Links</div>
+        <div class="panel-desc">Smart links (orcd.co, fanlink, etc.) shown in the Music tab.</div>
+        <div id="fanlinkList"></div>
+        <div class="add-row">
+          <input type="url" id="newFanUrl" placeholder="https://orcd.co/..."/>
+          <input type="text" id="newFanTitle" placeholder="Release title"/>
+          <button class="btn btn-primary btn-sm" onclick="addFanlink()">Add</button>
+        </div>
+      </div>
+
+      <!-- STREAMING -->
+      <div class="panel" id="panel-streaming">
+        <div class="panel-title">Streaming Links</div>
+        <div class="panel-desc">Your Spotify and SoundCloud profile links.</div>
+        <div class="field"><label>Spotify URL</label><input type="url" id="stream-spotify"/></div>
+        <div class="field"><label>SoundCloud URL</label><input type="url" id="stream-soundcloud"/></div>
+      </div>
+
+      <!-- CHANGE PASSWORD -->
+      <div class="panel" id="panel-password">
+        <div class="panel-title">Change Password</div>
+        <div class="panel-desc">Update your admin panel password.</div>
+        <div class="field"><label>Current Password</label><input type="password" id="oldPw"/></div>
+        <div class="field"><label>New Password</label><input type="password" id="newPw"/></div>
+        <div class="field"><label>Confirm New Password</label><input type="password" id="newPw2"/></div>
+        <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+        <div id="pwMsg" style="margin-top:.8rem;font-size:.83rem"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="save-bar">
+  <button class="save-btn" id="saveBtn" onclick="saveAll()">💾 Save Changes</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let data = {};
+let pw = '';
+
+async function doLogin() {
+  const input = document.getElementById('pwInput').value;
+  // Verify by trying to save with wrong data — instead just load and check
+  const res = await fetch('/api/content');
+  if (!res.ok) { showErr('Server error'); return; }
+  data = await res.json();
+  // Try a dummy save to verify password
+  const test = await fetch('/api/content', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ ...data, password: input })
+  });
+  if (!test.ok) { document.getElementById('loginErr').textContent = 'Wrong password'; return; }
+  pw = input;
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('saveBtn').style.display = 'flex';
+  populateAll();
+}
+
+function logout() {
+  pw = ''; data = {};
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function populateAll() {
+  // About
+  document.getElementById('bio-lead').value = data.bio?.lead || '';
+  document.getElementById('bio-p1').value = data.bio?.story?.[0] || '';
+  document.getElementById('bio-p2').value = data.bio?.story?.[1] || '';
+  document.getElementById('bio-p3').value = data.bio?.story?.[2] || '';
+
+  // Skills
+  renderSkills();
+
+  // Work videos
+  renderWorkVideos();
+
+  // Music videos
+  renderMusicVideos();
+
+  // Fan links
+  renderFanlinks();
+
+  // Streaming
+  document.getElementById('stream-spotify').value = data.streaming?.spotify || '';
+  document.getElementById('stream-soundcloud').value = data.streaming?.soundcloud || '';
+}
+
+function renderSkills() {
+  const el = document.getElementById('skillsList');
+  el.innerHTML = (data.skills || []).map((s, i) => `
+    <div class="card">
+      <div class="card-header"><span class="card-num">Skill ${i+1}</span>
+        <button class="btn btn-danger btn-sm" onclick="removeSkill(${i})">Remove</button>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Skill Name</label><input value="${s.name}" oninput="data.skills[${i}].name=this.value"/></div>
+        <div class="field"><label>Level (0–100)</label><input type="number" min="0" max="100" value="${s.level}" oninput="data.skills[${i}].level=+this.value"/></div>
+      </div>
+    </div>`).join('');
+}
+
+function removeSkill(i) { data.skills.splice(i,1); renderSkills(); }
+
+function renderWorkVideos() {
+  const el = document.getElementById('workList');
+  el.innerHTML = (data.work_videos || []).map((v, i) => `
+    <div class="card">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:.8rem">
+          <img class="thumb-prev" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" onerror="this.style.display='none'"/>
+          <span class="card-num">${v.title}</span>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeWorkVideo(${i})">Remove</button>
+      </div>
+      <div class="row2">
+        <div class="field"><label>YouTube ID</label><input value="${v.id}" oninput="data.work_videos[${i}].id=this.value"/></div>
+        <div class="field"><label>Title</label><input value="${v.title}" oninput="data.work_videos[${i}].title=this.value"/></div>
+      </div>
+    </div>`).join('');
+}
+
+function removeWorkVideo(i) { data.work_videos.splice(i,1); renderWorkVideos(); }
+
+function addWorkVideo() {
+  const id = document.getElementById('newWorkId').value.trim();
+  const title = document.getElementById('newWorkTitle').value.trim() || 'Untitled';
+  if (!id) return;
+  data.work_videos.push({ id, title });
+  document.getElementById('newWorkId').value = '';
+  document.getElementById('newWorkTitle').value = '';
+  renderWorkVideos();
+}
+
+function renderMusicVideos() {
+  const el = document.getElementById('musicList');
+  el.innerHTML = (data.music_videos || []).map((v, i) => `
+    <div class="card">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:.8rem">
+          <img class="thumb-prev" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" onerror="this.style.display='none'"/>
+          <span class="card-num">${v.title}</span>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeMusicVideo(${i})">Remove</button>
+      </div>
+      <div class="row2">
+        <div class="field"><label>YouTube URL</label><input value="${v.url}" oninput="data.music_videos[${i}].url=this.value;data.music_videos[${i}].id=(this.value.match(/v=([^&]+)/)||[])[1]||''"/></div>
+        <div class="field"><label>Title</label><input value="${v.title}" oninput="data.music_videos[${i}].title=this.value"/></div>
+      </div>
+    </div>`).join('');
+}
+
+function removeMusicVideo(i) { data.music_videos.splice(i,1); renderMusicVideos(); }
+
+function addMusicVideo() {
+  const url = document.getElementById('newMusicUrl').value.trim();
+  const title = document.getElementById('newMusicTitle').value.trim() || 'Untitled';
+  const id = (url.match(/v=([^&]+)/)||[])[1] || '';
+  if (!url) return;
+  data.music_videos.push({ url, id, title });
+  document.getElementById('newMusicUrl').value = '';
+  document.getElementById('newMusicTitle').value = '';
+  renderMusicVideos();
+}
+
+function renderFanlinks() {
+  const el = document.getElementById('fanlinkList');
+  el.innerHTML = (data.fanlinks || []).map((f, i) => `
+    <div class="card">
+      <div class="card-header"><span class="card-num">${f.title}</span>
+        <button class="btn btn-danger btn-sm" onclick="removeFanlink(${i})">Remove</button>
+      </div>
+      <div class="row2">
+        <div class="field"><label>URL</label><input value="${f.url}" oninput="data.fanlinks[${i}].url=this.value"/></div>
+        <div class="field"><label>Title</label><input value="${f.title}" oninput="data.fanlinks[${i}].title=this.value"/></div>
+      </div>
+    </div>`).join('');
+}
+
+function removeFanlink(i) { data.fanlinks.splice(i,1); renderFanlinks(); }
+
+function addFanlink() {
+  const url = document.getElementById('newFanUrl').value.trim();
+  const title = document.getElementById('newFanTitle').value.trim() || 'Release';
+  if (!url) return;
+  data.fanlinks.push({ url, title });
+  document.getElementById('newFanUrl').value = '';
+  document.getElementById('newFanTitle').value = '';
+  renderFanlinks();
+}
+
+async function saveAll() {
+  const btn = document.getElementById('saveBtn');
+  btn.classList.add('saving');
+  btn.textContent = 'Saving…';
+
+  // Collect current form values
+  data.bio.lead = document.getElementById('bio-lead').value;
+  data.bio.story = [
+    document.getElementById('bio-p1').value,
+    document.getElementById('bio-p2').value,
+    document.getElementById('bio-p3').value
+  ];
+  data.streaming = {
+    spotify: document.getElementById('stream-spotify').value,
+    soundcloud: document.getElementById('stream-soundcloud').value
+  };
+
+  const res = await fetch('/api/content', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...data, password: pw })
+  });
+
+  btn.classList.remove('saving');
+  btn.textContent = '💾 Save Changes';
+
+  if (res.ok) {
+    showToast('✅ Saved!');
+  } else {
+    showToast('❌ Save failed', true);
+  }
+}
+
+async function changePassword() {
+  const old = document.getElementById('oldPw').value;
+  const n1 = document.getElementById('newPw').value;
+  const n2 = document.getElementById('newPw2').value;
+  const msg = document.getElementById('pwMsg');
+  if (n1 !== n2) { msg.style.color='#c0392b'; msg.textContent='Passwords don\'t match'; return; }
+  if (!n1) { msg.textContent='Enter a new password'; return; }
+  const res = await fetch('/api/change-password', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ oldPassword: old, newPassword: n1 })
+  });
+  if (res.ok) {
+    pw = n1;
+    msg.style.color='#1ed760';
+    msg.textContent='Password updated!';
+    document.getElementById('oldPw').value='';
+    document.getElementById('newPw').value='';
+    document.getElementById('newPw2').value='';
+  } else {
+    msg.style.color='#c0392b';
+    msg.textContent='Wrong current password';
+  }
+}
+
+function showToast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (err ? ' error' : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+{
+  "bio": {
+    "eyebrow": "Who I Am",
+    "title": "About Nadav Nir",
+    "lead": "Freelance Sound Engineer, Formerly Broadcasting Engineering Supervisor at KAN — the Israeli Public Broadcasting Corporation. BA (Hons) in Sound Technology from LIPA, Liverpool. Based in Tel Aviv.",
+    "story": [
+      "I'm a Sound Engineer currently employed as a Broadcasting Engineering Supervisor at KAN — the Israeli Public Broadcasting Corporation in Jerusalem. In 2016 I graduated with a BA (Hons) in Sound Technology from LIPA (Liverpool Institute for Performing Arts, UK).",
+      "In my day-to-day work I operate consoles, calibrate RF devices, manage signal processors and speaker PA systems across broadcast and live environments. I also hold a Cyber Security & Cloud Computing diploma from the Technion (2023).",
+      "Beyond engineering I'm a guitarist and music creator — always glad to bring technical and musical interests together when relevant."
+    ]
+  },
+  "skills": [
+    {
+      "name": "Studio Recording",
+      "level": 95
+    },
+    {
+      "name": "Mixing",
+      "level": 95
+    },
+    {
+      "name": "Mastering",
+      "level": 88
+    },
+    {
+      "name": "Live Broadcast",
+      "level": 90
+    },
+    {
+      "name": "Sound Design",
+      "level": 82
+    },
+    {
+      "name": "Post-Production",
+      "level": 87
+    }
+  ],
+  "work_videos": [
+    {
+      "id": "WJsDO-FJejk",
+      "title": "opera kol hamusica 1"
+    },
+    {
+      "id": "WHVfJ0kOe5w",
+      "title": "opera kol hamusica 2"
+    },
+    {
+      "id": "RkNNw3-ZFeI",
+      "title": "opera kol hamusica 3"
+    },
+    {
+      "id": "uYA9sY3ECS0",
+      "title": "opera kol hamusica 4"
+    },
+    {
+      "id": "F6xkjNF7FgU",
+      "title": "מה יהיה איתך"
+    },
+    {
+      "id": "uVdIiwTnP0s",
+      "title": "אליס"
+    },
+    {
+      "id": "Ff0ZzXeQLjw",
+      "title": "תרגיל בהתעוררות"
+    },
+    {
+      "id": "vb7uWD3m1iI",
+      "title": "הגשמה עצמית"
+    },
+    {
+      "id": "ao6My7cNp1Q",
+      "title": "מחכה"
+    },
+    {
+      "id": "0qOPC73peWM",
+      "title": "אני בוכה"
+    },
+    {
+      "id": "aaZhCO2kqcc",
+      "title": "אם את כבר הולכת"
+    },
+    {
+      "id": "eKm37HxUFE0",
+      "title": "אומייגד"
+    },
+    {
+      "id": "_ui5h8arRUM",
+      "title": "בוער בי השינוי"
+    },
+    {
+      "id": "9rmzHtQ1oU0",
+      "title": "יהיה טוב"
+    },
+    {
+      "id": "ZAka66VDMXc",
+      "title": "לך אלי"
+    },
+    {
+      "id": "eOEjEyvoNMw",
+      "title": "משיבון"
+    }
+  ],
+  "music_videos": [
+    {
+      "url": "https://www.youtube.com/watch?v=aydGR18yQ7o",
+      "id": "aydGR18yQ7o",
+      "title": "במקום הזה"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=ke8yQoB8dXw",
+      "id": "ke8yQoB8dXw",
+      "title": "עניין שבשגרה"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=Gn8xpInthNg&list=PLZ1Hx_B5tPa85pYmqSDBzACXmn8AV_Hdv&pp=sAgC",
+      "id": "Gn8xpInthNg",
+      "title": "חוסר עניין לציבור (אלבום שלם)"
+    }
+  ],
+  "fanlinks": [
+    {
+      "url": "https://orcd.co/bamakomhaze",
+      "title": "במקום הזה"
+    },
+    {
+      "url": "https://orcd.co/inyanshebashigra",
+      "title": "עניין שבשגרה"
+    },
+    {
+      "url": "https://orcd.co/hoser-inyan-latzibur",
+      "title": "חוסר עניין לציבור"
+    }
+  ],
+  "streaming": {
+    "spotify": "https://open.spotify.com/artist/0c3GOVBbjRsVinH3XSFM2J?si=smzIxJwcT62pa8UGYdIGxw",
+    "soundcloud": "https://soundcloud.com/nirfield-music"
+  }
+}
