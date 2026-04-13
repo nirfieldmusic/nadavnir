@@ -8,8 +8,11 @@ const CONTENT_FILE = path.join(__dirname, 'content.json');
 app.use(express.json());
 app.use(express.static(__dirname));
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'nadav-nir-sound.html'));
+});
+
 function getAdminPassword() {
-  // Use environment variable if set (production), otherwise fall back to content.json (local)
   if (process.env.ADMIN_PASSWORD) return process.env.ADMIN_PASSWORD;
   const data = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
   return data.admin_password;
@@ -18,7 +21,6 @@ function getAdminPassword() {
 // Read content
 app.get('/api/content', (req, res) => {
   const data = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
-  // Don't expose password
   const { admin_password, ...safe } = data;
   res.json(safe);
 });
