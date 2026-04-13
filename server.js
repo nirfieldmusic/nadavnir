@@ -13,6 +13,7 @@ app.get('/', (req, res) => {
 });
 
 function getAdminPassword() {
+  // Use environment variable if set (production), otherwise fall back to content.json (local)
   if (process.env.ADMIN_PASSWORD) return process.env.ADMIN_PASSWORD;
   const data = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
   return data.admin_password;
@@ -21,6 +22,7 @@ function getAdminPassword() {
 // Read content
 app.get('/api/content', (req, res) => {
   const data = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
+  // Don't expose password
   const { admin_password, ...safe } = data;
   res.json(safe);
 });
