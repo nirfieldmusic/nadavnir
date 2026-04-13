@@ -1447,17 +1447,17 @@
         <div class="form-two-col">
           <div class="form-group">
             <label>Your Name</label>
-            <input type="text" placeholder="Full name" required />
+            <input type="text" name="name" placeholder="Full name" required />
           </div>
           <div class="form-group">
             <label>Email Address</label>
-            <input type="email" placeholder="your@email.com" required />
+            <input type="email" name="email" placeholder="your@email.com" required />
           </div>
         </div>
         <div class="form-two-col">
           <div class="form-group">
             <label>Project Type</label>
-            <select>
+            <select name="project_type">
               <option>Studio Recording</option>
               <option>Mixing</option>
               <option>Mastering</option>
@@ -1469,7 +1469,7 @@
           </div>
           <div class="form-group">
             <label>Budget Range</label>
-            <select>
+            <select name="budget">
               <option>Under $500</option>
               <option>$500 – $1,500</option>
               <option>$1,500 – $5,000</option>
@@ -1480,7 +1480,7 @@
         </div>
         <div class="form-group">
           <label>Message</label>
-          <textarea placeholder="Tell me about your project — what are you working on, what do you need, and when?"></textarea>
+          <textarea name="message" placeholder="Tell me about your project — what are you working on, what do you need, and when?"></textarea>
         </div>
         <button type="submit" class="btn btn-primary form-submit">Send Message</button>
       </form>
