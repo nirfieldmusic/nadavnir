@@ -92,6 +92,7 @@
       <button class="sidebar-item" onclick="showPanel('fanlinks')">Fan Links</button>
       <button class="sidebar-item" onclick="showPanel('streaming')">Streaming Links</button>
       <button class="sidebar-item" onclick="showPanel('password')">Change Password</button>
+      <button class="sidebar-item" onclick="showPanel('cueim')">Cueim Licenses</button>
     </nav>
 
     <div class="content">
@@ -155,6 +156,24 @@
         <div class="panel-desc">Your Spotify and SoundCloud profile links.</div>
         <div class="field"><label>Spotify URL</label><input type="url" id="stream-spotify"/></div>
         <div class="field"><label>SoundCloud URL</label><input type="url" id="stream-soundcloud"/></div>
+      </div>
+
+      <!-- CUEIM LICENSES -->
+      <div class="panel" id="panel-cueim">
+        <div class="panel-title">Cueim Licenses</div>
+        <div class="panel-desc">
+          A license request email (from the site's Vibe Coding form) gives you the
+          customer's name, email and machine code. Generate the key on your Mac:<br/>
+          <code style="color:#4a8fa8">python3 keygen.py "שם הלקוח" XXXX-XXXX-XXXX</code><br/>
+          then paste everything here — the button opens a ready-to-send email to the customer.
+        </div>
+        <div class="field"><label>Customer Name (exactly as in the key)</label><input type="text" id="licName" dir="rtl"/></div>
+        <div class="field"><label>Customer Email</label><input type="email" id="licEmail"/></div>
+        <div class="field"><label>Machine Code</label><input type="text" id="licMachine" placeholder="XXXX-XXXX-XXXX" style="font-family:monospace"/></div>
+        <div class="field"><label>License Key (from keygen.py)</label><input type="text" id="licKey" placeholder="XXXX-XXXX-XXXX-XXXX" style="font-family:monospace"/></div>
+        <button class="btn btn-primary" onclick="composeLicenseEmail()">✉️ Compose Email to Customer</button>
+        <button class="btn btn-outline" onclick="copyLicenseText()">📋 Copy Text Only</button>
+        <div id="licMsg" style="margin-top:.8rem;font-size:.83rem;color:#4a8fa8"></div>
       </div>
 
       <!-- CHANGE PASSWORD -->
@@ -397,6 +416,46 @@ async function changePassword() {
     msg.style.color='#c0392b';
     msg.textContent='Wrong current password';
   }
+}
+
+/* ── Cueim licenses: compose the key-delivery email to the customer ── */
+function _licenseEmailBody() {
+  const name    = document.getElementById('licName').value.trim();
+  const machine = document.getElementById('licMachine').value.trim().toUpperCase();
+  const key     = document.getElementById('licKey').value.trim().toUpperCase();
+  if (!name || !key) return null;
+  return `שלום ${name},
+
+תודה על רכישת Cueim! להלן פרטי ההפעלה שלך:
+
+שם (להקליד בדיוק כך):  ${name}
+מפתח הפעלה:            ${key}
+${machine ? `(המפתח תקף למחשב עם קוד ${machine})\n` : ''}
+הפעלה: פתח את Cueim, הזן את השם והמפתח בחלון ההפעלה — וזהו.
+המפתח תקף למחשב אחד; אם תחליף מחשב, שלח לי את קוד המחשב החדש
+(מוצג בחלון ההפעלה או בתפריט עזרה ← פרטי רישיון) ואנפיק מפתח מעודכן.
+
+שיהיה במזל!
+נדב ניר`;
+}
+
+function composeLicenseEmail() {
+  const body  = _licenseEmailBody();
+  const email = document.getElementById('licEmail').value.trim();
+  const msg   = document.getElementById('licMsg');
+  if (!body || !email) { msg.style.color='#c0392b'; msg.textContent='Fill in name, email and key first'; return; }
+  location.href = 'mailto:' + encodeURIComponent(email)
+    + '?subject=' + encodeURIComponent('מפתח ההפעלה שלך ל-Cueim 🎛')
+    + '&body=' + encodeURIComponent(body);
+  msg.style.color='#4a8fa8'; msg.textContent='Email draft opened in your mail app — review and send.';
+}
+
+function copyLicenseText() {
+  const body = _licenseEmailBody();
+  const msg  = document.getElementById('licMsg');
+  if (!body) { msg.style.color='#c0392b'; msg.textContent='Fill in name and key first'; return; }
+  navigator.clipboard.writeText(body);
+  msg.style.color='#4a8fa8'; msg.textContent='Copied — paste into WhatsApp/email.';
 }
 
 function showToast(msg, err=false) {

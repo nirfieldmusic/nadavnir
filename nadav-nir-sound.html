@@ -983,6 +983,7 @@
     <li><button onclick="showTab('services')">Services</button></li>
     <li><button onclick="showTab('contact')">Contact</button></li>
     <li><button onclick="showTab('music')">Music</button></li>
+    <li><button onclick="showTab('vibecoding')">Vibe Coding</button></li>
   </ul>
   <div class="nav-social" style="display:flex;align-items:center;gap:.7rem;margin-left:1rem;">
     <a href="https://www.facebook.com/nadav.nir/" target="_blank" rel="noopener" title="Facebook" style="display:flex;align-items:center;opacity:.65;transition:opacity .2s;" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=.65"><svg width="18" height="18" viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
@@ -1002,6 +1003,7 @@
   <button onclick="mobileNav('services')">Services</button>
   <button onclick="mobileNav('contact')">Contact</button>
   <button onclick="mobileNav('music')">Music</button>
+  <button onclick="mobileNav('vibecoding')">Vibe Coding</button>
 </div>
 
 <!-- ═══════════ HOME ═══════════ -->
@@ -1687,6 +1689,96 @@
   </div>
 </section>
 
+<!-- ═══════════ VIBE CODING ═══════════ -->
+<section id="vibecoding" class="section">
+  <div class="page-header">
+    <p class="page-eyebrow">Vibe Coding</p>
+    <h2 class="page-title">Vibe Coding</h2>
+    <div class="page-rule"></div>
+    <p class="page-lead">
+      Tools and software I build for the world of sound and live shows.<br/>
+      <strong>Cueim</strong> — a show-control cue manager for Mac: play music, video and
+      images in a live performance, with crossfades, chasers, MIDI and more.
+    </p>
+  </div>
+
+  <div class="contact-wrap">
+    <div class="contact-form" id="licenseFormWrap">
+      <h3>Get a Cueim License</h3>
+      <p style="color:#888;font-size:.88rem;margin-bottom:1.2rem;">
+        Fill in the details and I'll get back to you with an activation key for your Mac.
+        You'll find your <strong>Machine Code</strong> in Cueim's activation window
+        (or under Help &rarr; License Info) — the "Copy" button puts it on your clipboard.
+      </p>
+      <!-- Download: the app itself is free to download (trial mode nags
+           until activated), so the link lives right at the top -->
+      <div style="text-align:center;margin-bottom:1.4rem;">
+        <a class="btn btn-outline" href="/downloads/Cueim.zip" download
+           style="display:inline-flex;align-items:center;gap:.5rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download Cueim for Mac (free trial)
+        </a>
+        <div style="color:#777;font-size:.8rem;margin-top:.4rem;">
+          Fully functional trial — every feature works; a reminder window appears until a license is activated
+        </div>
+      </div>
+
+      <!-- Step 1: pay 50₪ via PayPal (opens in a new tab), step 2: the form -->
+      <div style="background:rgba(74,143,168,.08);border:1px solid rgba(74,143,168,.3);
+                  border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.4rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+          <div>
+            <strong style="font-size:1.05rem;">Cueim License — 50&nbsp;₪</strong><br/>
+            <span style="color:#888;font-size:.85rem;">One-time payment · one Mac per license · Step 1: pay, Step 2: the form below</span>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="payWithPayPal()"
+                  style="background:#0070ba;display:inline-flex;align-items:center;gap:.5rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/></svg>
+            Pay 50&nbsp;₪ with PayPal
+          </button>
+        </div>
+      </div>
+      <form id="licenseForm" onsubmit="handleLicenseSubmit(event)">
+        <input type="hidden" name="_subject" value="🎛 Cueim license request" />
+        <input type="hidden" name="paypal_clicked" id="paypalClickedField" value="no" />
+        <div class="form-two-col">
+          <div class="form-group">
+            <label>Full Name (the license will be issued to this name)</label>
+            <input type="text" name="name" placeholder="Full name" required />
+          </div>
+          <div class="form-group">
+            <label>Email (your key will be sent here)</label>
+            <input type="email" name="email" placeholder="your@email.com" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Machine Code (from Cueim, formatted XXXX-XXXX-XXXX)</label>
+          <input type="text" name="machine_code" placeholder="XXXX-XXXX-XXXX"
+                 pattern="[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}"
+                 title="Shown in Cueim's activation window — 12 characters in three groups"
+                 style="direction:ltr;text-align:left;font-family:monospace;" required />
+        </div>
+        <div class="form-group">
+          <label>Notes (optional)</label>
+          <textarea name="message" placeholder="Questions, requests, anything else..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary form-submit">Send License Request</button>
+      </form>
+    </div>
+    <div class="form-sent" id="licenseSentMsg">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+      <h4>Request Sent!</h4>
+      <p>Got it — your activation key will be emailed to you shortly.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════ FOOTER ═══════════ -->
 <footer>
   © 2026 <span>Nadav Nir</span> · Sound & Music · All rights reserved
@@ -1731,8 +1823,8 @@
 
   // Scroll spy - highlight active nav tab based on scroll position
   (function() {
-    const sections = ['home','about','work','services','contact','music'];
-    const map = {home:0,about:1,work:2,services:3,contact:4,music:5};
+    const sections = ['home','about','work','services','contact','music','vibecoding'];
+    const map = {home:0,about:1,work:2,services:3,contact:4,music:5,vibecoding:6};
     function onScroll() {
       const offset = 80;
       let current = sections[0];
@@ -1957,6 +2049,50 @@
       btn.disabled = false;
       btn.textContent = 'Send Message';
       alert('Something went wrong. Please email me directly at nirfield13@gmail.com');
+    }
+  }
+
+  /* ── VIBE CODING: PayPal payment (50 ILS one-time) ──
+     PayPal.Me link — no API keys or server code needed; PayPal shows the
+     prefilled 50 ILS amount and the payer just confirms.
+     ⚠ REPLACE 'nadavnir' with your actual PayPal.Me handle
+       (create one at paypal.me if you don't have it yet). */
+  const PAYPAL_ME_HANDLE = 'nadavnir';
+  function payWithPayPal(){
+    document.getElementById('paypalClickedField').value = 'yes';
+    window.open('https://paypal.me/' + PAYPAL_ME_HANDLE + '/50ILS',
+                '_blank', 'noopener');
+  }
+
+  /* ── VIBE CODING: Cueim license request ──
+     Same Formspree inbox as the contact form — the hidden _subject field
+     marks these emails as license requests, and the form fields (name,
+     email, machine_code) are exactly what keygen.py needs. */
+  async function handleLicenseSubmit(e){
+    e.preventDefault();
+    const form = document.getElementById('licenseForm');
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      const data = new FormData(form);
+      const res = await fetch('https://formspree.io/f/xvzdozyn', {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        document.getElementById('licenseFormWrap').style.display='none';
+        document.getElementById('licenseSentMsg').style.display='block';
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Send License Request';
+        alert('Something went wrong — you can email me directly at nirfield13@gmail.com');
+      }
+    } catch(err) {
+      btn.disabled = false;
+      btn.textContent = 'Send License Request';
+      alert('Something went wrong — you can email me directly at nirfield13@gmail.com');
     }
   }
 
