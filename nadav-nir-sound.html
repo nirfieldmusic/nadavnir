@@ -1713,7 +1713,8 @@
       <!-- Download: the app itself is free to download (trial mode nags
            until activated), so the link lives right at the top -->
       <div style="text-align:center;margin-bottom:1.4rem;">
-        <a class="btn btn-outline" href="/downloads/Cueim.zip" download
+        <a class="btn btn-outline"
+           href="https://github.com/nirfieldmusic/nadavnir/releases/download/Cueim/Cueim.zip"
            style="display:inline-flex;align-items:center;gap:.5rem;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -2054,10 +2055,8 @@
 
   /* ── VIBE CODING: PayPal payment (50 ILS one-time) ──
      PayPal.Me link — no API keys or server code needed; PayPal shows the
-     prefilled 50 ILS amount and the payer just confirms.
-     ⚠ REPLACE 'nadavnir' with your actual PayPal.Me handle
-       (create one at paypal.me if you don't have it yet). */
-  const PAYPAL_ME_HANDLE = 'nadavnir';
+     prefilled 50 ILS amount and the payer just confirms. */
+  const PAYPAL_ME_HANDLE = 'nadavnirsound';
   function payWithPayPal(){
     document.getElementById('paypalClickedField').value = 'yes';
     window.open('https://paypal.me/' + PAYPAL_ME_HANDLE + '/50ILS',
