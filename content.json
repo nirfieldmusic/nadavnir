@@ -143,5 +143,11 @@
   "streaming": {
     "spotify": "https://open.spotify.com/artist/0c3GOVBbjRsVinH3XSFM2J?si=smzIxJwcT62pa8UGYdIGxw",
     "soundcloud": "https://soundcloud.com/nirfield-music"
+  },
+  "vibe_coding": {
+    "lead": "Tools and software I build for the world of sound and live shows. Cueim — a show-control cue manager for Mac: play music, video and images in a live performance, with crossfades, chasers, MIDI and more.",
+    "form_intro": "Fill in the details and I'll get back to you with an activation key for your Mac. You'll find your Machine Code in Cueim's activation window (or under Help → License Info) — the \"Copy\" button puts it on your clipboard.",
+    "price": 50,
+    "download_url": "https://github.com/nirfieldmusic/nadavnir/releases/download/Cueim/Cueim.zip"
   }
 }

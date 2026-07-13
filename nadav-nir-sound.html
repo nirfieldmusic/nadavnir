@@ -2068,12 +2068,13 @@
      PayPal.Me link — no API keys or server code needed; PayPal shows the
      prefilled 50 ILS amount and the payer just confirms. */
   const PAYPAL_ME_HANDLE = 'nadavnirsound';
+  let VIBE_PRICE = 50;   // overwritten by content.json's vibe_coding.price, if set
   function payWithPayPal(){
-    // Payer picks the amount; anything under the 50 ILS license price is
-    // silently bumped up to it (the field also has min=50).
+    // Payer picks the amount; anything under the license price is
+    // silently bumped up to it (the field also has a matching min).
     const box = document.getElementById('paypalAmount');
-    let amt = Math.round(Number(box.value) || 50);
-    if (amt < 50) amt = 50;
+    let amt = Math.round(Number(box.value) || VIBE_PRICE);
+    if (amt < VIBE_PRICE) amt = VIBE_PRICE;
     box.value = amt;
     document.getElementById('paypalClickedField').value = 'yes';
     window.open('https://paypal.me/' + PAYPAL_ME_HANDLE + '/' + amt + 'ILS',
@@ -2200,6 +2201,23 @@
         const sc = document.querySelector('#stream-placeholder-sc, [href*="soundcloud"]');
         if (sp && c.streaming.spotify) sp.href = c.streaming.spotify;
         if (sc && c.streaming.soundcloud) sc.href = c.streaming.soundcloud;
+      }
+
+      // Vibe Coding (Cueim)
+      if (c.vibe_coding) {
+        const lead = document.querySelector('#vibecoding .page-lead');
+        if (lead && c.vibe_coding.lead) lead.textContent = c.vibe_coding.lead;
+        const intro = document.querySelector('#licenseFormWrap > p');
+        if (intro && c.vibe_coding.form_intro) intro.textContent = c.vibe_coding.form_intro;
+        const dl = document.querySelector('#licenseFormWrap a.btn-outline');
+        if (dl && c.vibe_coding.download_url) dl.href = c.vibe_coding.download_url;
+        if (c.vibe_coding.price) {
+          VIBE_PRICE = Number(c.vibe_coding.price) || VIBE_PRICE;
+          const priceLbl = document.querySelector('#licenseFormWrap strong');
+          if (priceLbl) priceLbl.textContent = `Cueim License — ${VIBE_PRICE} ₪`;
+          const amountInput = document.getElementById('paypalAmount');
+          if (amountInput) { amountInput.value = VIBE_PRICE; amountInput.min = VIBE_PRICE; }
+        }
       }
 
     } catch(e) { /* running as static file, skip */ }

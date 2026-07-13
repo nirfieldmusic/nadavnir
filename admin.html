@@ -91,6 +91,7 @@
       <button class="sidebar-item" onclick="showPanel('music')">Music Videos</button>
       <button class="sidebar-item" onclick="showPanel('fanlinks')">Fan Links</button>
       <button class="sidebar-item" onclick="showPanel('streaming')">Streaming Links</button>
+      <button class="sidebar-item" onclick="showPanel('vibecoding')">Vibe Coding</button>
       <button class="sidebar-item" onclick="showPanel('password')">Change Password</button>
       <button class="sidebar-item" onclick="showPanel('cueim')">Cueim Licenses</button>
     </nav>
@@ -156,6 +157,18 @@
         <div class="panel-desc">Your Spotify and SoundCloud profile links.</div>
         <div class="field"><label>Spotify URL</label><input type="url" id="stream-spotify"/></div>
         <div class="field"><label>SoundCloud URL</label><input type="url" id="stream-soundcloud"/></div>
+      </div>
+
+      <!-- VIBE CODING -->
+      <div class="panel" id="panel-vibecoding">
+        <div class="panel-title">Vibe Coding</div>
+        <div class="panel-desc">Edit the text, price and download link shown on the Vibe Coding (Cueim) page.</div>
+        <div class="field"><label>Lead Paragraph</label><textarea id="vibe-lead"></textarea></div>
+        <div class="field"><label>License Form Intro Text</label><textarea id="vibe-intro"></textarea></div>
+        <div class="row2">
+          <div class="field"><label>License Price (₪)</label><input type="number" min="1" id="vibe-price"/></div>
+          <div class="field"><label>Download URL (Cueim.zip)</label><input type="url" id="vibe-download"/></div>
+        </div>
       </div>
 
       <!-- CUEIM LICENSES -->
@@ -256,6 +269,12 @@ function populateAll() {
   // Streaming
   document.getElementById('stream-spotify').value = data.streaming?.spotify || '';
   document.getElementById('stream-soundcloud').value = data.streaming?.soundcloud || '';
+
+  // Vibe Coding
+  document.getElementById('vibe-lead').value = data.vibe_coding?.lead || '';
+  document.getElementById('vibe-intro').value = data.vibe_coding?.form_intro || '';
+  document.getElementById('vibe-price').value = data.vibe_coding?.price || 50;
+  document.getElementById('vibe-download').value = data.vibe_coding?.download_url || '';
 }
 
 function renderSkills() {
@@ -376,6 +395,12 @@ async function saveAll() {
   data.streaming = {
     spotify: document.getElementById('stream-spotify').value,
     soundcloud: document.getElementById('stream-soundcloud').value
+  };
+  data.vibe_coding = {
+    lead: document.getElementById('vibe-lead').value,
+    form_intro: document.getElementById('vibe-intro').value,
+    price: +document.getElementById('vibe-price').value || 50,
+    download_url: document.getElementById('vibe-download').value
   };
 
   const res = await fetch('/api/content', {
