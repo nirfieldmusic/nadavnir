@@ -12,12 +12,32 @@ app.set('trust proxy', true);
 app.disable('x-powered-by');
 
 // ── Security headers ─────────────────────────────────────────────
+// CSP is intentionally permissive on inline scripts/styles because the site
+// uses inline handlers and inline styles throughout; it still restricts which
+// external origins may load scripts, framing, fonts and network calls.
+const CSP = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: https:",
+  "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
+  "connect-src 'self' https://formspree.io",
+  "form-action 'self' https://formspree.io",
+  "frame-ancestors 'self'",
+  "upgrade-insecure-requests",
+].join('; ');
+
 app.use((req, res, next) => {
   res.set({
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'SAMEORIGIN',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    'Content-Security-Policy': CSP,
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   });
   next();
 });
