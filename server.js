@@ -32,11 +32,105 @@ app.use((req, res, next) => {
   next();
 });
 
+// ── Cloudflare Access check for everything admin ─────────────────
+// Cloudflare Access puts a login screen in front of /admin.html. That only
+// helps if nobody can reach the server another way (the onrender.com address,
+// or calling the API directly). So the server itself checks the signed token
+// Access attaches to every approved visitor, and refuses admin requests
+// without a valid one.
+const ACCESS_TEAM = process.env.CF_ACCESS_TEAM || 'solitary-frog-dff9';
+const ACCESS_AUD = process.env.CF_ACCESS_AUD || '555dc2350cc0026a38a854e59202dc6b5ed82735f6c06e2cf80d9589cd02ecd4';
+const ACCESS_ISSUER = `https://${ACCESS_TEAM}.cloudflareaccess.com`;
+const ACCESS_CERTS_URL = process.env.CF_ACCESS_CERTS_URL || `${ACCESS_ISSUER}/cdn-cgi/access/certs`;
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'nirfield13@gmail.com')
+  .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+
+let accessKeys = new Map();   // kid -> KeyObject
+let accessKeysFetchedAt = 0;
+
+async function loadAccessKeys(force) {
+  const fresh = Date.now() - accessKeysFetchedAt < 60 * 60 * 1000;
+  if (!force && fresh && accessKeys.size) return;
+  if (force && Date.now() - accessKeysFetchedAt < 30 * 1000) return; // don't hammer
+  const res = await fetch(ACCESS_CERTS_URL);
+  if (!res.ok) throw new Error('certs fetch failed: ' + res.status);
+  const { keys = [] } = await res.json();
+  const next = new Map();
+  for (const jwk of keys) {
+    if (jwk.kid && jwk.kty === 'RSA') next.set(jwk.kid, crypto.createPublicKey({ key: jwk, format: 'jwk' }));
+  }
+  accessKeys = next;
+  accessKeysFetchedAt = Date.now();
+}
+
+function b64urlJson(part) {
+  return JSON.parse(Buffer.from(part, 'base64url').toString('utf8'));
+}
+
+async function verifyAccessToken(token) {
+  const parts = String(token || '').split('.');
+  if (parts.length !== 3) return null;
+  let header, payload;
+  try { header = b64urlJson(parts[0]); payload = b64urlJson(parts[1]); } catch { return null; }
+  if (header.alg !== 'RS256' || !header.kid) return null;
+
+  await loadAccessKeys(false);
+  if (!accessKeys.has(header.kid)) await loadAccessKeys(true); // keys rotate
+  const key = accessKeys.get(header.kid);
+  if (!key) return null;
+
+  const ok = crypto.verify('sha256', Buffer.from(parts[0] + '.' + parts[1]), key,
+                           Buffer.from(parts[2], 'base64url'));
+  if (!ok) return null;
+
+  const now = Math.floor(Date.now() / 1000);
+  const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+  if (!aud.includes(ACCESS_AUD)) return null;
+  if (payload.iss !== ACCESS_ISSUER) return null;
+  if (typeof payload.exp !== 'number' || payload.exp < now - 30) return null;
+  if (typeof payload.nbf === 'number' && payload.nbf > now + 30) return null;
+  const email = String(payload.email || '').toLowerCase();
+  if (!ADMIN_EMAILS.includes(email)) return null;
+  return payload;
+}
+
+function readCookie(req, name) {
+  const header = req.get('cookie') || '';
+  for (const part of header.split(';')) {
+    const i = part.indexOf('=');
+    if (i > 0 && part.slice(0, i).trim() === name) return decodeURIComponent(part.slice(i + 1).trim());
+  }
+  return '';
+}
+
+function isLocalDev(req) {
+  // Running on your own computer (npm start) - no Cloudflare in front.
+  if (process.env.ACCESS_LOCAL_BYPASS === '0') return false;
+  const a = req.socket.remoteAddress || '';
+  return a === '127.0.0.1' || a === '::1' || a === '::ffff:127.0.0.1';
+}
+
+async function requireAccess(req, res, next) {
+  if (isLocalDev(req)) return next();
+  try {
+    const token = req.get('cf-access-jwt-assertion') || readCookie(req, 'CF_Authorization');
+    if (await verifyAccessToken(token)) return next();
+  } catch (err) {
+    console.error('Access check failed:', err.message);
+  }
+  res.status(403).set('X-Robots-Tag', 'noindex, nofollow');
+  if (req.path.startsWith('/api/')) return res.json({ error: 'Not authorized' });
+  res.type('text/plain').send('Forbidden');
+}
+
 // The admin page should never show up in search results.
 app.use('/admin.html', (req, res, next) => {
   res.set('X-Robots-Tag', 'noindex, nofollow');
   next();
 });
+app.use('/admin.html', requireAccess);
+app.post('/api/content', requireAccess);
+app.post('/api/change-password', requireAccess);
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(__dirname, { dotfiles: 'ignore', index: false }));
