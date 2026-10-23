@@ -2116,11 +2116,20 @@
   }
 
   /* ── DYNAMIC CONTENT LOADER ── */
+  // Escape values coming from content.json before they go into innerHTML,
+  // so a stray <, >, " or ' in a title or URL can't inject markup.
+  function escHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
   function ytThumb(id) {
+    id = escHtml(id);
     return `<div class="video-embed-wrap"><a href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener" style="position:absolute;top:0;left:0;width:100%;height:100%;display:block;text-decoration:none;"><img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover;"><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;background:rgba(255,0,0,0.88);border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="margin-left:4px;"><path d="M8 5v14l11-7z"/></svg></div></a></div>`;
   }
 
   function ytThumbUrl(url, id) {
+    url = escHtml(url); id = escHtml(id);
     return `<div class="video-embed-wrap"><a href="${url}" target="_blank" rel="noopener" style="position:absolute;top:0;left:0;width:100%;height:100%;display:block;text-decoration:none;"><img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover;"><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;background:rgba(255,0,0,0.88);border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="margin-left:4px;"><path d="M8 5v14l11-7z"/></svg></div></a></div>`;
   }
 
@@ -2157,7 +2166,7 @@
           grid.innerHTML = c.work_videos.map(v => `
             <div class="video-card">
               ${ytThumb(v.id)}
-              <div class="video-card-info"><h4>${v.title}</h4></div>
+              <div class="video-card-info"><h4>${escHtml(v.title)}</h4></div>
             </div>`).join('');
         }
       }
@@ -2173,7 +2182,7 @@
           c.music_videos.forEach(v => {
             const card = document.createElement('div');
             card.className = 'video-card';
-            card.innerHTML = `${ytThumbUrl(v.url, v.id)}<div class="video-card-info"><h4>${v.title}</h4><span class="video-card-tag">Music</span></div>`;
+            card.innerHTML = `${ytThumbUrl(v.url, v.id)}<div class="video-card-info"><h4>${escHtml(v.title)}</h4><span class="video-card-tag">Music</span></div>`;
             grid.appendChild(card);
           });
         }
@@ -2184,13 +2193,13 @@
         const grid = document.getElementById('fanlinkGrid');
         if (grid) {
           grid.innerHTML = c.fanlinks.map(f => `
-            <a href="${f.url}" target="_blank" rel="noopener" style="background:var(--white);border:1.5px solid #c8e6c9;border-radius:12px;padding:1.4rem 1.8rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(46,125,50,.08);min-width:240px;flex:1;max-width:340px;text-decoration:none;transition:transform .2s,box-shadow .2s;" onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
+            <a href="${escHtml(f.url)}" target="_blank" rel="noopener" style="background:var(--white);border:1.5px solid #c8e6c9;border-radius:12px;padding:1.4rem 1.8rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(46,125,50,.08);min-width:240px;flex:1;max-width:340px;text-decoration:none;transition:transform .2s,box-shadow .2s;" onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''">
               <div style="width:44px;height:44px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
               </div>
               <div>
                 <div style="font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#2e7d32;font-weight:600;margin-bottom:.2rem;">Fan Link</div>
-                <div style="font-size:.88rem;color:var(--text);font-weight:600;margin-bottom:.15rem;">${f.title}</div>
+                <div style="font-size:.88rem;color:var(--text);font-weight:600;margin-bottom:.15rem;">${escHtml(f.title)}</div>
                 <div style="font-size:.8rem;color:#2e7d32;">Listen on all platforms →</div>
               </div>
             </a>`).join('');
