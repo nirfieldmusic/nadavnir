@@ -103,15 +103,15 @@ function readCookie(req, name) {
   return '';
 }
 
-function isLocalDev(req) {
-  // Running on your own computer (npm start) - no Cloudflare in front.
-  if (process.env.ACCESS_LOCAL_BYPASS === '0') return false;
-  const a = req.socket.remoteAddress || '';
-  return a === '127.0.0.1' || a === '::1' || a === '::ffff:127.0.0.1';
+function isLocalDev() {
+  // Only when you run the site on your own computer with:  ACCESS_DEV=1 npm start
+  // Render never sets this, so on the live site the check always runs.
+  return process.env.ACCESS_DEV === '1';
 }
 
 async function requireAccess(req, res, next) {
-  if (isLocalDev(req)) return next();
+  res.set('Cache-Control', 'no-store');
+  if (isLocalDev()) return next();
   try {
     const token = req.get('cf-access-jwt-assertion') || readCookie(req, 'CF_Authorization');
     if (await verifyAccessToken(token)) return next();
